@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { GlobalStyle } from "../assets/styles/StyledComponents";
 import MapPreview from "./MapPreview";
 import { useNavigate } from "react-router-dom";
-
-import './List.css';
+import '../assets/styles/list.css';
 import { FaUser,FaEdit, FaTrash,FaMapMarkerAlt, FaRegClock, FaUserFriends, FaPhoneAlt  } from "react-icons/fa";
 
 
@@ -72,7 +71,7 @@ function Card({data}){
             </span>
             <div className="card-actions">
               <button
-              onClick={() => navigate("/update/:id")}
+              onClick={() => navigate(`/update/${item.id}`)}
               ><FaEdit /></button>
 
             </div>
@@ -93,7 +92,7 @@ function Card({data}){
           />
           <button 
             className="detail" 
-            onClick={() => navigate("/detail/:id")}
+            onClick={() => navigate(`/post/${item.id}`)}
           >
             상세보기
           </button>

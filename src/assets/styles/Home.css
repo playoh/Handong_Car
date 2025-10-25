@@ -1,0 +1,89 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+.survice-p{
+    background-color: #958aed;
+    font-size: 14px;
+    border-radius: 30px;
+    width: 170px;
+    padding: 10px;
+    color: white;
+    text-align: center;
+
+}
+.icon{
+  padding-right: 3px;
+}
+.layout{
+      background: linear-gradient(135deg, #6a5af9, #b66bff);
+      width: 100vw; 
+      height: 100vh;
+      padding-top: 100px;
+      display: flex;          
+      align-items: center;   
+      padding-left:80px;     
+      padding-top: 0px;   
+      box-sizing: border-box;
+}
+.forHGU-p{
+  font-size: 50px;
+  color: white;
+  margin: 0Px;
+  padding: none;
+}
+.smart-h1{
+  margin-top: 0px;
+  font-size: 50px;
+  color: #f18fe7;
+}
+.explain-p{
+  font-size: 20px;
+  color:white
+}
+.apply-btn{
+  width: 200px;
+  padding: 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: white;
+  color: #877af6;
+  font-size:16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.apply-btn:hover{
+     opacity: 0.7;
+}
+.left {
+  flex: 1;               
+}
+
+.right-image {
+  padding-right: 70px;
+  height: 100%;
+  flex: 1;                 
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;
+}
+.slideshow-container {
+  margin-left: 50px;
+  width: 105%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slideshow-img {
+  width: 105%;
+  height: auto;
+  border-radius: 20px;
+  transition: opacity 1s ease-in-out;
+}
+.carpool-img {
+  width: 100%; 
+  height: auto;
+  border-radius: 20px;
+  object-fit: cover;
+}
