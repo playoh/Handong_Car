@@ -93,7 +93,7 @@ const InfoTitle = styled.div`
   color: gray;
   font-size: 14px;
 `;
-const InfoContents = styled.p`
+const InfoContents = styled.div`
   color: black;
   font-weight: bold;
   margin: 2px 0 0 0;
@@ -133,7 +133,7 @@ const UserName = styled.span`
   font-size: 14px;
   color: #1a1a1a;
 `;
-const NoteText = styled.p`
+const NoteText = styled.div`
   font-size: 13px;
   color: #555;
   margin-top: 5%;           
@@ -226,8 +226,8 @@ function ApplyContainer({ data, perPerson, routeSummary }) {
   return (
     <>
       <PriceCard>
-        <SubTitle>{priceText}</SubTitle>
         <InfoTitle>1인당 요금</InfoTitle>
+        <SubTitle>{priceText}</SubTitle>
 
         <SeatsRow>
           <span>잔여좌석</span>
@@ -253,7 +253,7 @@ function ApplyContainer({ data, perPerson, routeSummary }) {
 
 function DetailPage() {
 
-  const KAKAO_KEY = process.env.REACT_APP_KAKAO_REST_KEY;
+  const KAKAO_KEY = process.env.REACT_APP_KAKAO_APP_KEY_YEONJU;
 
   const [data, setData] = useState({});
   const [participants, setParticipants] = useState([]);
@@ -314,14 +314,16 @@ function DetailPage() {
       console.log(response.data);
 
       const route = response?.data?.routes?.[0];
-      if (!route || route.result_code !== 0) return;
+      if (!route || !route.summary) {
+        console.warn("경로 요약 없음", response?.data);
+        return;
+      }
 
       const sum = route.summary;
       setRouteSummary(sum);
 
       const capacity = Number(post.total_people ?? 1);
-      const split = Math.max(1, capacity);
-      const per = sum?.fare?.taxi ? Math.round(sum.fare.taxi / split) : null;
+      const per = sum?.fare?.taxi ? Math.round(sum.fare.taxi / Math.max(1, capacity)) : null;
       setPerPerson(per);
 
     } catch (error) {
