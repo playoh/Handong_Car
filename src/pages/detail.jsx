@@ -253,7 +253,7 @@ function ApplyContainer({ data, perPerson, routeSummary }) {
 
 function DetailPage() {
 
-  const KAKAO_KEY = process.env.REACT_APP_KAKAO_REST_KEY;
+  const KAKAO_KEY = process.env.REACT_APP_KAKAO_APP_KEY_YEONJU;
 
   const [data, setData] = useState({});
   const [participants, setParticipants] = useState([]);
