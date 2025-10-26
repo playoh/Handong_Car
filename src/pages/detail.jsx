@@ -45,13 +45,14 @@ const CurrentSituation = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  width: 10%;
-  font-size: 1.2%;         
-  border-radius: 10px;
+  width: 6vw;
+  font-size: 14px;
+  border-radius: 30px;
   padding: 1% 2%;
   margin: 0.5%;
-  background-color: #E1FBE8;
+
+  background-color: ${({ $status }) =>($status === "모집 마감" || $status === "모집마감") ? "#f3b6b6" : "#b6f3cb"};
+  color: ${({ $status }) =>($status === "모집 마감" || $status === "모집마감") ? "#741515" : "#157436"};
 `;
 
 // ================ 정보 =================
@@ -353,7 +354,7 @@ function DetailPage() {
       <PageWrap>
         <LeftPage>
           <Container>
-            <CurrentSituation>{data.status}</CurrentSituation>
+            <CurrentSituation $status={data.status}>{data.status}</CurrentSituation>
             <SubTitle>모집 정보</SubTitle>
             <InfoGrid>
               <InfoItem>

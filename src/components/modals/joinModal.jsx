@@ -80,14 +80,14 @@ const ApplyBtn = styled.button`
 
 
 export default function Join({
-    open,
-    onClose, 
-    postId, 
-    onCreated,
-    current_people,
-    total_people,
-    status
-  }) {
+  open,
+  onClose,
+  postId,
+  onCreated,
+  current_people,
+  total_people,
+  status
+}) {
 
   const [data, setData] = useState({
     nickname: "",
@@ -101,7 +101,7 @@ export default function Join({
 
   async function postApply() {
     try {
-      if(Number(current_people)>=Number(total_people)){
+      if (Number(current_people) >= Number(total_people)) {
         alert("이미 모집이 마감되었습니다.");
         return;
       }
@@ -140,17 +140,33 @@ export default function Join({
   };
 
   async function postCurrentPeople() {
+    try {
+      const getRes = await axios.get(
+        `https://68f63d016b852b1d6f169327.mockapi.io/posts/${postId}`
+      );
+      const prev = getRes.data;
 
-    const nextCurrent = Number(current_people ?? 0) + 1;
-    const isFull = nextCurrent >= Number(total_people ?? 0);
+      const cur = Number(prev?.current_people ?? 0);
+      const tot = Number(prev?.total_people ?? 0);
+      const nextCurrent = cur + 1;
+      const isFull = nextCurrent >= tot;
 
-    const payload = {
-      current_people : nextCurrent,
-      status: isFull ? "모집 마감" : (status || "모집 중"),
+      const payload = {
+        current_people: nextCurrent,
+        status: isFull ? "모집 마감" : "모집중",
+      };
+
+      const putRes = await axios.put(
+        `https://68f63d016b852b1d6f169327.mockapi.io/posts/${postId}`,
+        payload
+      );
+
+      console.log("POST current_people put 성공:", putRes.data);
+      return putRes.data; 
+    } catch (e) {
+      console.error("POST current_people put 실패:", e?.response || e);
+      throw e;
     }
-    await axios.put(`https://68f63d016b852b1d6f169327.mockapi.io/posts/${postId}`,
-      payload
-    );
   }
 
   const handleSubmit = (e) => {
