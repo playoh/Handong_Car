@@ -75,6 +75,7 @@ function Card({data}){
             <button><FaTrash/></button>
             </div>
           </div>
+          
           <div className="card-info">
             <p><FaUser /> {item.host_nickname}</p>
             <p><FaMapMarkerAlt /> {item.start_point} → {item.destination}</p>
