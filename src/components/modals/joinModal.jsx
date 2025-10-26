@@ -242,7 +242,7 @@ export default function Join({
       const cur = Number(prev?.current_people ?? 0);
       const tot = Number(prev?.total_people ?? 0);
       const nextCurrent = cur + 1;
-      const isFull = nextCurrent >= tot;
+      const isFull = nextCurrent >= (tot-1);
 
       const payload = {
         current_people: nextCurrent,
