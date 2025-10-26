@@ -6,7 +6,7 @@ import styles from "../assets/styles/create&update.module.css";
 import MapSearchInput from "../components/MapSearchInput";
 
 export default function UpdatePage() {
-  const { id } = useParams();
+  const { post_id } = useParams();  // 이제 이 값이 식별자
   const navigate = useNavigate();
 
   const [form, setForm] = useState(null);
