@@ -214,7 +214,7 @@ const ApplyBtn = styled.button`
   cursor: pointer;
 `;
 
-function ApplyContainer({ data, perPerson, routeSummary }) {
+function ApplyContainer({ data, perPerson, routeSummary, onApply }) {
   const total = Number(data?.total_people ?? 0);
   const current = Number(data?.current_people ?? 0);
   const remain = Math.max(0, total - current);
@@ -222,6 +222,9 @@ function ApplyContainer({ data, perPerson, routeSummary }) {
 
   const priceText = perPerson != null ? `${perPerson.toLocaleString()}원` : `-`;
   const minutes = routeSummary?.duration ? Math.round(routeSummary.duration / 60) : null;
+
+  const isFull = remain=== 0;
+
 
   return (
     <>
@@ -241,7 +244,14 @@ function ApplyContainer({ data, perPerson, routeSummary }) {
             예상 소요시간: <b>{minutes}분</b>
           </InfoTitle>
         )}
-        <ApplyBtn>신청하기</ApplyBtn>
+        <ApplyBtn 
+          onClick={onApply}
+          disabled={isFull}
+          style={{
+          background: isFull ? "#ccc" : "#2a62ff", // ✅ 색상 변경
+          cursor: isFull ? "not-allowed" : "pointer",
+          }}
+        >{isFull ? "모집마감" : "신청하기"}</ApplyBtn>
       </PriceCard>
     </>
   )
@@ -262,6 +272,7 @@ function DetailPage() {
   const [routeSummary, setRouteSummary] = useState(null);
   const [perPerson, setPerPerson] = useState(0);
 
+  const [isJoinOpen, setIsJoinOpen] = useState(false);
 
   const randomNumber = Math.floor(Math.random() * 99);
   const randomGender = Math.random() > 0.5 ? "men" : "women";
@@ -402,9 +413,22 @@ function DetailPage() {
 
         </LeftPage>
         <RightPage>
-          <ApplyContainer data={data} perPerson={perPerson} routeSummary={routeSummary} />
+          <ApplyContainer
+            data={data}
+            perPerson={perPerson}
+            routeSummary={routeSummary}
+            onApply={() => setIsJoinOpen(true)}
+            />
         </RightPage>
       </PageWrap>
+
+      {isJoinOpen && (
+        <Join
+        open={isJoinOpen}              
+        onClose={() => setIsJoinOpen(false)}
+        post={data}                          
+        />
+      )}
     </>
   );
 };
