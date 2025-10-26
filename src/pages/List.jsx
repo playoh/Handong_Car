@@ -5,6 +5,7 @@ import MapPreview from "./MapPreview";
 import { useNavigate } from "react-router-dom";
 import '../assets/styles/list.css';
 import { FaUser,FaEdit, FaTrash,FaMapMarkerAlt, FaRegClock, FaUserFriends, FaPhoneAlt  } from "react-icons/fa";
+import axios from "axios";
 
 
 function Home(){
@@ -25,6 +26,20 @@ function Home(){
     const term = searchTerm.toLowerCase();
     return start.includes(term) || dest.includes(term);
   });
+
+  async function deletPost(id) {
+    if (window.confirm("정말 이 게시글을 삭제하시겠습니까?")) {
+      try {
+        await axios.delete(`https://68f63d016b852b1d6f169327.mockapi.io/posts/${id}`);
+        alert("게시글이 삭제되었습니다.");
+        
+        setData((prev) => prev.filter((item) => item.post_id !== id));
+      } catch (err) {
+        console.error("삭제 실패:", err);
+        alert("삭제 중 오류가 발생했습니다.");
+      }
+    }
+  }
 
   return(
     <>
@@ -51,12 +66,12 @@ function Home(){
   
       <br/>
   
-      <Card data={filteredData} />
+      <Card data={filteredData} onDelet={deletPost}/>
     </>
   );
 };
 
-function Card({data}){
+function Card({data, onDelet}){
   const navigate = useNavigate();
     if (!Array.isArray(data)) return null; 
     
@@ -72,7 +87,7 @@ function Card({data}){
               <button
               onClick={() => navigate(`/update/${item.post_id}`)}
               ><FaEdit /></button>
-            <button><FaTrash/></button>
+            <button onClick={()=>onDelet(item.post_id)}><FaTrash/></button>
             </div>
           </div>
           

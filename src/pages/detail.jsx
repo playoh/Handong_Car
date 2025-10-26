@@ -45,13 +45,14 @@ const CurrentSituation = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  width: 10%;
-  font-size: 1.2%;         
-  border-radius: 10px;
+  width: 6vw;
+  font-size: 14px;
+  border-radius: 30px;
   padding: 1% 2%;
   margin: 0.5%;
-  background-color: #E1FBE8;
+
+  background-color: ${({ $status }) =>($status === "모집 마감" || $status === "모집마감") ? "#f3b6b6" : "#b6f3cb"};
+  color: ${({ $status }) =>($status === "모집 마감" || $status === "모집마감") ? "#741515" : "#157436"};
 `;
 
 // ================ 정보 =================
@@ -217,8 +218,8 @@ const ApplyBtn = styled.button`
 function ApplyContainer({ data, perPerson, routeSummary, onApply }) {
   const total = Number(data?.total_people ?? 0);
   const current = Number(data?.current_people ?? 0);
-  const remain = Math.max(0, total - current);
-  const percent = total > 0 ? (current / total) * 100 : 0;
+  const remain = Math.max(0, total - (current+1));
+  const percent = total > 0 ? ((current+1) / total) * 100 : 0;
 
   const priceText = perPerson != null ? `${perPerson.toLocaleString()}원` : `-`;
   const minutes = routeSummary?.duration ? Math.round(routeSummary.duration / 60) : null;
@@ -353,7 +354,7 @@ function DetailPage() {
       <PageWrap>
         <LeftPage>
           <Container>
-            <CurrentSituation>{data.status}</CurrentSituation>
+            <CurrentSituation $status={data.status}>{data.status}</CurrentSituation>
             <SubTitle>모집 정보</SubTitle>
             <InfoGrid>
               <InfoItem>
@@ -382,7 +383,7 @@ function DetailPage() {
                 <InfoIcon style={{ background: "#F1E8FD" }}><FontAwesomeIcon icon={faUsers} style={{ color: "#8435e0" }} /></InfoIcon>
                 <InfoText>
                   <InfoTitle>모집인원</InfoTitle>
-                  <InfoContents>{data.total_people}명 (잔여 {Math.max(0, (data.total_people ?? 0) - (data.current_people ?? 0))}명)</InfoContents>
+                  <InfoContents>{data.total_people}명 (잔여 {Math.max(0, (data.total_people ?? 0) - (data.current_people+1 ?? 0))}명)</InfoContents>
                 </InfoText>
               </InfoItem>
             </InfoGrid>
@@ -424,9 +425,13 @@ function DetailPage() {
 
       {isJoinOpen && (
         <Join
-        open={isJoinOpen}              
-        onClose={() => setIsJoinOpen(false)}
-        post={data}                          
+          open={isJoinOpen}              
+          onClose={() => setIsJoinOpen(false)}
+          postId={id}
+          currentPeople={data?.current_people ?? 0}
+          totalPeople={data?.total_people ?? 0}
+          status={data?.status ?? "모집중"}
+          onCreated={()=> {getParticipantsInfo(); getPostInfo();}}                          
         />
       )}
     </>
