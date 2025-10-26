@@ -70,7 +70,7 @@ function Card({data}){
             </span>
             <div className="card-actions">
               <button
-              onClick={() => navigate(`/update/${item.id}`)}
+              onClick={() => navigate(`/update/${item.post_id}`)}
               ><FaEdit /></button>
             <button><FaTrash/></button>
             </div>
@@ -79,7 +79,7 @@ function Card({data}){
             <p><FaUser /> {item.host_nickname}</p>
             <p><FaMapMarkerAlt /> {item.start_point} → {item.destination}</p>
             <p><FaRegClock /> {item.date} {item.time}</p>
-            <p><FaUserFriends /> {item.current_people}/{item.total_people}</p>
+            <p><FaUserFriends /> {item.current_people+1}/{item.total_people}</p>
             
           </div>
           <MapPreview
@@ -90,7 +90,7 @@ function Card({data}){
           />
           <button 
             className="detail" 
-            onClick={() => navigate(`/post/${item.id}`)}
+            onClick={() => navigate(`/post/${item.post_id}`)}
           >
             상세보기
           </button>
