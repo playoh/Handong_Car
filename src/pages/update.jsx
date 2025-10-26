@@ -6,7 +6,8 @@ import styles from "../assets/styles/create&update.module.css";
 import MapSearchInput from "../components/MapSearchInput";
 
 export default function UpdatePage() {
-  const { post_id } = useParams();  // 이제 이 값이 식별자
+  // 라우트 파라미터에서 post_id만 사용
+  const { post_id } = useParams();
   const navigate = useNavigate();
 
   const [form, setForm] = useState(null);
@@ -88,7 +89,7 @@ export default function UpdatePage() {
   };
 
   const fetchPost = async (force = false) => {
-    if (!id) return;
+    if (!post_id) return;
     if (!force && (askedRef.current || pwOK)) return;
     askedRef.current = true;
 
@@ -97,7 +98,7 @@ export default function UpdatePage() {
     setPwOK(false);
 
     try {
-      const { data } = await getPost(id);
+      const { data } = await getPost(post_id);
       if (!("password" in data)) throw new Error("PASSWORD_MISSING");
 
       const ok = askPassword(String(data.password));
@@ -109,7 +110,7 @@ export default function UpdatePage() {
       }
 
       const safe = {
-        post_id: data.post_id ?? data.id ?? id, // ← post_id 기준으로 통일
+        post_id: data.post_id ?? data.id ?? post_id, // post_id 기준 통일
         host_nickname: data.host_nickname ?? "",
         host_phone: data.host_phone ?? "",
         date: data.date ?? "",
@@ -148,7 +149,7 @@ export default function UpdatePage() {
   useEffect(() => {
     fetchPost();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [post_id]);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -204,8 +205,8 @@ export default function UpdatePage() {
 
     try {
       setSubmitting(true);
-      await updatePost(form.post_id ?? id, next); // ← post_id로 보냄
-      navigate(`/post/${form.post_id ?? id}`, { replace: true }); // ← 라우트와 키 모두 교체
+      await updatePost(form.post_id ?? post_id, next); // post_id로 업데이트
+      navigate(`/post/${form.post_id ?? post_id}`, { replace: true });
     } catch (err) {
       console.error("[PUT ERROR]", err?.response?.status, err?.message, err?.response?.data);
     } finally {
@@ -341,7 +342,7 @@ export default function UpdatePage() {
             </div>
           </div>
 
-          {/* 3) 출발지 / 도착지 (카카오 검색) */}
+          {/* 3) 출발지 / 도착지 */}
           <div id="start_point">
             <MapSearchInput
               label="출발지 (검색 후 선택)"
