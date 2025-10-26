@@ -79,7 +79,15 @@ const ApplyBtn = styled.button`
 
 
 
-export default function Join({ open, onClose, postId, onCreated }) {
+export default function Join({
+    open,
+    onClose, 
+    postId, 
+    onCreated,
+    current_people,
+    total_people,
+    status
+  }) {
 
   const [data, setData] = useState({
     nickname: "",
@@ -93,15 +101,23 @@ export default function Join({ open, onClose, postId, onCreated }) {
 
   async function postApply() {
     try {
+      if(Number(current_people)>=Number(total_people)){
+        alert("이미 모집이 마감되었습니다.");
+        return;
+      }
       const res = await axios.post(`https://68f63d016b852b1d6f169327.mockapi.io/participants`, {
         participant_nickname: data.nickname,
         participant_phone: data.phone,
         participant_note: data.note,
         post_id: postId,
       });
-      console.log("POST 성공:", res.data);
+      console.log("참가자 POST 성공:", res.data);
+
+      await postCurrentPeople();
+
       alert("신청이 완료되었습니다.");
       setIsApplied(true);
+
       onCreated?.();
       onClose?.();
     } catch (err) {
@@ -123,6 +139,20 @@ export default function Join({ open, onClose, postId, onCreated }) {
     }
   };
 
+  async function postCurrentPeople() {
+
+    const nextCurrent = Number(current_people ?? 0) + 1;
+    const isFull = nextCurrent >= Number(total_people ?? 0);
+
+    const payload = {
+      current_people : nextCurrent,
+      status: isFull ? "모집 마감" : (status || "모집 중"),
+    }
+    await axios.put(`https://68f63d016b852b1d6f169327.mockapi.io/posts/${postId}`,
+      payload
+    );
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -136,8 +166,6 @@ export default function Join({ open, onClose, postId, onCreated }) {
     }
     postApply();
   };
-
-
 
   return (
     <BackgroundDim onClick={onClose}>
