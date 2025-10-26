@@ -6,7 +6,7 @@ import styles from "../assets/styles/create&update.module.css";
 import MapSearchInput from "../components/MapSearchInput";
 
 export default function UpdatePage() {
-  const { id } = useParams();
+  const { post_id } = useParams();  // 이제 이 값이 식별자
   const navigate = useNavigate();
 
   const [form, setForm] = useState(null);
@@ -109,7 +109,7 @@ export default function UpdatePage() {
       }
 
       const safe = {
-        id: data.id ?? id,
+        post_id: data.post_id ?? data.id ?? id, // ← post_id 기준으로 통일
         host_nickname: data.host_nickname ?? "",
         host_phone: data.host_phone ?? "",
         date: data.date ?? "",
@@ -204,8 +204,8 @@ export default function UpdatePage() {
 
     try {
       setSubmitting(true);
-      await updatePost(form.id ?? id, next);
-      navigate(`/detail/${form.id ?? id}`, { replace: true });
+      await updatePost(form.post_id ?? id, next); // ← post_id로 보냄
+      navigate(`/post/${form.post_id ?? id}`, { replace: true }); // ← 라우트와 키 모두 교체
     } catch (err) {
       console.error("[PUT ERROR]", err?.response?.status, err?.message, err?.response?.data);
     } finally {
