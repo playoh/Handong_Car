@@ -72,7 +72,7 @@ function Card({data}){
               <button
               onClick={() => navigate(`/update/${item.id}`)}
               ><FaEdit /></button>
-
+            <button><FaTrash/></button>
             </div>
           </div>
           <div className="card-info">
