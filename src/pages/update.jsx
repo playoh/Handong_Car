@@ -205,7 +205,7 @@ export default function UpdatePage() {
     try {
       setSubmitting(true);
       await updatePost(form.post_id ?? id, next); // ← post_id로 보냄
-      navigate(`/detail/${form.id ?? id}`, { replace: true });
+      navigate(`/post/${form.post_id ?? id}`, { replace: true }); // ← 라우트와 키 모두 교체
     } catch (err) {
       console.error("[PUT ERROR]", err?.response?.status, err?.message, err?.response?.data);
     } finally {
