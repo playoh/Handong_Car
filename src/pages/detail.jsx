@@ -226,8 +226,8 @@ function ApplyContainer({ data, perPerson, routeSummary }) {
   return (
     <>
       <PriceCard>
-        <SubTitle>{priceText}</SubTitle>
         <InfoTitle>1인당 요금</InfoTitle>
+        <SubTitle>{priceText}</SubTitle>
 
         <SeatsRow>
           <span>잔여좌석</span>
