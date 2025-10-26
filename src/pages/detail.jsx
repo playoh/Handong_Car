@@ -424,9 +424,10 @@ function DetailPage() {
 
       {isJoinOpen && (
         <Join
-        open={isJoinOpen}              
-        onClose={() => setIsJoinOpen(false)}
-        post={data}                          
+          open={isJoinOpen}              
+          onClose={() => setIsJoinOpen(false)}
+          postId={id}
+          onCreated={()=> getParticipantsInfo()}                          
         />
       )}
     </>

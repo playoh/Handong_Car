@@ -97,11 +97,13 @@ export default function Join({ open, onClose, postId, onCreated }) {
         participant_nickname: data.nickname,
         participant_phone: data.phone,
         participant_note: data.note,
-
+        post_id: postId,
       });
       console.log("POST 성공:", res.data);
       alert("신청이 완료되었습니다.");
       setIsApplied(true);
+      onCreated?.();
+      onClose?.();
     } catch (err) {
       console.log("POST 실패:", err);
       alert("신청 중 오류가 발생했습니다.");
@@ -146,6 +148,7 @@ export default function Join({ open, onClose, postId, onCreated }) {
           <label>닉네임</label>
           <input
             required
+            type="text"
             name="nickname"
             value={data.nickname}
             placeholder="닉네임을 입력해주세요."
@@ -156,6 +159,7 @@ export default function Join({ open, onClose, postId, onCreated }) {
           <label>전화번호</label>
           <input
             required
+            type="tel"
             name="phone"
             value={data.phone}
             placeholder="전화번호를 입력해주세요."
