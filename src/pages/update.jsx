@@ -109,7 +109,7 @@ export default function UpdatePage() {
       }
 
       const safe = {
-        id: data.id ?? id,
+        post_id: data.post_id ?? data.id ?? id, // ← post_id 기준으로 통일
         host_nickname: data.host_nickname ?? "",
         host_phone: data.host_phone ?? "",
         date: data.date ?? "",
