@@ -6,7 +6,8 @@ import styles from "../assets/styles/create&update.module.css";
 import MapSearchInput from "../components/MapSearchInput";
 
 export default function UpdatePage() {
-  const { id } = useParams();
+  // 라우트 파라미터에서 post_id만 사용
+  const { post_id } = useParams();
   const navigate = useNavigate();
 
   const [form, setForm] = useState(null);
@@ -75,16 +76,36 @@ export default function UpdatePage() {
     return e;
   };
 
-  const fetchPost = async () => {
-    if (!id) return;
+  const askPassword = (pw) => {
+    const input = window.prompt("이 게시글의 비밀번호를 입력하세요.");
+    if (input === null) return false;
+    if (String(input) === String(pw)) return true;
+    alert("비밀번호가 올바르지 않습니다. 다시 시도하세요.");
+    return askPassword(pw);
+  };
+
+  const fetchPost = async (force = false) => {
+    if (!post_id) return;
+    if (!force && (askedRef.current || pwOK)) return;
+    askedRef.current = true;
+
     setLoading(true);
     setLoadError("");
 
     try {
-      const { data } = await getPost(id);
+      const { data } = await getPost(post_id);
+      if (!("password" in data)) throw new Error("PASSWORD_MISSING");
+
+      const ok = askPassword(String(data.password));
+      if (!ok) {
+        setLoadError("비밀번호 확인이 필요합니다. 아래 버튼으로 다시 시도하세요.");
+        setForm(null);
+        setPwOK(false);
+        return;
+      }
 
       const safe = {
-        id: data.id ?? id,
+        post_id: data.post_id ?? data.id ?? post_id, // post_id 기준 통일
         host_nickname: data.host_nickname ?? "",
         host_phone: data.host_phone ?? "",
         date: data.date ?? "",
@@ -119,7 +140,8 @@ export default function UpdatePage() {
 
   useEffect(() => {
     fetchPost();
-  }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post_id]);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -175,8 +197,8 @@ export default function UpdatePage() {
 
     try {
       setSubmitting(true);
-      await updatePost(form.id ?? id, next);
-      navigate(`/detail/${form.id ?? id}`, { replace: true });
+      await updatePost(form.post_id ?? post_id, next); // post_id로 업데이트
+      navigate(`/post/${form.post_id ?? post_id}`, { replace: true });
     } catch (err) {
       console.error("[PUT ERROR]", err?.response?.status, err?.message, err?.response?.data);
     } finally {
@@ -309,7 +331,7 @@ export default function UpdatePage() {
             </div>
           </div>
 
-          {/* 3) 출발지 / 도착지 (카카오 검색) */}
+          {/* 3) 출발지 / 도착지 */}
           <div id="start_point">
             <MapSearchInput
               label="출발지 (검색 후 선택)"
@@ -419,5 +441,3 @@ function PageShell({ children }) {
     </div>
   );
 }
-
-

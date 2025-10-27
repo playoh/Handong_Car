@@ -99,7 +99,7 @@ function Card({data, onDelet}){
       {data.map((item, index) => (
         <div key={index} className="card">
           <div className="card-header">
-            <span className={`status ${item.status === "모집 중" ? "open" : "closed"}`}>
+            <span className={`status ${item.status === "모집중" ? "open" : "closed"}`}>
               {item.status}
             </span>
             <div className="card-actions">
@@ -109,6 +109,7 @@ function Card({data, onDelet}){
             <button onClick={()=>onDelet(item.post_id)}><FaTrash/></button>
             </div>
           </div>
+          
           <div className="card-info">
             <p><FaUser /> {item.host_nickname}</p>
             <p><FaMapMarkerAlt /> {item.start_point} → {item.destination}</p>

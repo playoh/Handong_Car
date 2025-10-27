@@ -159,7 +159,7 @@ export default function CreatePage() {
       setSubmitting(true);
       const { data } = await createPost(payload);
       alert("등록 완료!");
-      navigate(`/detail/${data?.id ?? ""}`, { replace: true });
+      navigate(`/post/${data?.post_id ?? ""}`, { replace: true });
     } catch (err) {
       console.error("[POST ERROR]", err?.response?.status, err?.message, err?.response?.data);
       alert("등록에 실패했습니다.");
