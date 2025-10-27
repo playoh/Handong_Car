@@ -75,6 +75,25 @@ function Card({data, onDelet}){
   const navigate = useNavigate();
     if (!Array.isArray(data)) return null; 
     
+  const askPassword = async(item) => {
+  const input = window.prompt("이 게시글의 비밀번호를 입력하세요.");
+    if (input === null) return;
+
+    try{
+      const res = await axios.get(`https://68f63d016b852b1d6f169327.mockapi.io/posts/${item.id ?? item.post_id}`);
+      const post = res.data;
+
+      if(String(input)===String(post.password ?? "")){
+        navigate(`/update/${post.id ?? item.post_id}`);
+      }else{
+        alert("비밀번호가 올바르지 않습니다.");
+      }
+    }catch(err){
+      console.error("비밀번호 확인 중 오류:", err);
+      alert("게시글 정보를 불러올 수 없습니다.");
+    }
+  };
+  
   return(
     <div className="cardallign">
       {data.map((item, index) => (
@@ -85,7 +104,7 @@ function Card({data, onDelet}){
             </span>
             <div className="card-actions">
               <button
-              onClick={() => navigate(`/update/${item.post_id}`)}
+                onClick={()=> askPassword(item)}
               ><FaEdit /></button>
             <button onClick={()=>onDelet(item.post_id)}><FaTrash/></button>
             </div>

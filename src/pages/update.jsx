@@ -1,5 +1,5 @@
 // src/pages/update.jsx
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPost, updatePost } from "../api";
 import styles from "../assets/styles/create&update.module.css";
@@ -12,7 +12,6 @@ export default function UpdatePage() {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
-  const [pwOK, setPwOK] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -27,12 +26,9 @@ export default function UpdatePage() {
     note: "",
   });
 
-  const askedRef = useRef(false);
-
   const numericKeys = useMemo(() => ["total_people", "current_people"], []);
   const toInt = (v, fb = 0) => (Number.isFinite(+v) ? +v : fb);
   const phoneRe = /^01[0-9]-\d{3,4}-\d{4}$/;
-
   const under100 = (s) => (s?.length ?? 0) < 100;
   const nickUnder10 = (s) => (s?.length ?? 0) < 10;
 
@@ -79,34 +75,13 @@ export default function UpdatePage() {
     return e;
   };
 
-  const askPassword = (pw) => {
-    const input = window.prompt("이 게시글의 비밀번호를 입력하세요.");
-    if (input === null) return false;
-    if (String(input) === String(pw)) return true;
-    alert("비밀번호가 올바르지 않습니다. 다시 시도하세요.");
-    return askPassword(pw);
-  };
-
-  const fetchPost = async (force = false) => {
+  const fetchPost = async () => {
     if (!id) return;
-    if (!force && (askedRef.current || pwOK)) return;
-    askedRef.current = true;
-
     setLoading(true);
     setLoadError("");
-    setPwOK(false);
 
     try {
       const { data } = await getPost(id);
-      if (!("password" in data)) throw new Error("PASSWORD_MISSING");
-
-      const ok = askPassword(String(data.password));
-      if (!ok) {
-        setLoadError("비밀번호 확인이 필요합니다. 아래 버튼으로 다시 시도하세요.");
-        setForm(null);
-        setPwOK(false);
-        return;
-      }
 
       const safe = {
         id: data.id ?? id,
@@ -128,14 +103,11 @@ export default function UpdatePage() {
       };
 
       setForm(safe);
-      setPwOK(true);
       validate(safe);
     } catch (err) {
       const st = err?.response?.status;
       setLoadError(
-        err?.message === "PASSWORD_MISSING"
-          ? "비밀번호 필드가 없는 게시글입니다. 데이터 규칙을 확인하세요."
-          : st === 404
+        st === 404
           ? "해당 ID의 게시글이 없습니다. (404)"
           : "게시글을 불러올 수 없습니다."
       );
@@ -147,7 +119,6 @@ export default function UpdatePage() {
 
   useEffect(() => {
     fetchPost();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const onChange = (e) => {
@@ -179,7 +150,7 @@ export default function UpdatePage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!pwOK || !form) return;
+    if (!form) return;
 
     const eMap = validate(form);
     const firstInvalid = Object.keys(eMap).find((k) => eMap[k]);
@@ -224,14 +195,11 @@ export default function UpdatePage() {
   if (loadError) {
     return (
       <PageShell>
-        <div className={styles.card} style={{ gap: 12 }}>
+        <div className={styles.card}>
           <p style={{ margin: 0 }}>{loadError}</p>
           <div className={styles.actions}>
-            <button
-              className={`${styles.button} ${styles.btnGradient}`}
-              onClick={() => fetchPost(true)}
-            >
-              비밀번호 다시 시도
+            <button className={styles.button} onClick={() => fetchPost()}>
+              다시 시도
             </button>
             <button className={styles.button} onClick={() => navigate(-1)}>
               뒤로가기
@@ -242,10 +210,10 @@ export default function UpdatePage() {
     );
   }
 
-  if (!form || !pwOK) {
+  if (!form) {
     return (
       <PageShell>
-        <div className={styles.card}>비밀번호 확인이 필요합니다.</div>
+        <div className={styles.card}>데이터를 불러오지 못했습니다.</div>
       </PageShell>
     );
   }
@@ -451,3 +419,5 @@ function PageShell({ children }) {
     </div>
   );
 }
+
+
